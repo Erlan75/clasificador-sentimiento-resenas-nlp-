@@ -1,0 +1,377 @@
+{
+  "semilla_reproducibilidad": 42,
+  "total_datos": 1200,
+  "datos_entrenamiento": 960,
+  "datos_prueba": 240,
+  "modelo_en_produccion": {
+    "nombre": "Regresión Logística",
+    "archivo_serializado": "src/models/modelo_sentimiento.joblib",
+    "f1_macro_prueba": 0.9917,
+    "exactitud_prueba": 0.9917,
+    "justificacion": "Se seleccionó Regresión Logística para producción tras validar la Escalera de Modelos (Línea Base -> Naive Bayes -> Regresión Logística). Alcanza un F1-Macro de 0.9917 superando ampliamente la línea base (0.3333), ofrece probabilidades bien calibradas mediante la función sigmoide y permite interpretar directamente los pesos de cada término y bigrama."
+  },
+  "hiperparametros_optimos": {
+    "naive_bayes": {
+      "alpha": 0.1,
+      "ngram_range": [
+        1,
+        2
+      ],
+      "mejor_f1_macro_validacion_cruzada": 0.9927
+    },
+    "regresion_logistica": {
+      "C": 5.0,
+      "ngram_range": [
+        1,
+        2
+      ],
+      "mejor_f1_macro_validacion_cruzada": 0.9958
+    }
+  },
+  "comparacion_modelos": {
+    "linea_base": {
+      "nombre_modelo": "Línea Base (DummyClassifier)",
+      "exactitud": 0.5,
+      "f1_macro": 0.3333,
+      "precision_macro": 0.25,
+      "exhaustividad_recall_macro": 0.5,
+      "tiempo_entrenamiento_segundos": 0.1785,
+      "matriz_confusion": [
+        [
+          120,
+          0
+        ],
+        [
+          120,
+          0
+        ]
+      ],
+      "detalle_matriz_confusion": {
+        "verdaderos_negativos": 120,
+        "falsos_positivos": 0,
+        "falsos_negativos": 120,
+        "verdaderos_positivos": 0
+      }
+    },
+    "naive_bayes": {
+      "nombre_modelo": "Naive Bayes Multinomial",
+      "exactitud": 0.9958,
+      "f1_macro": 0.9958,
+      "precision_macro": 0.9959,
+      "exhaustividad_recall_macro": 0.9958,
+      "tiempo_entrenamiento_segundos": 5.9381,
+      "matriz_confusion": [
+        [
+          120,
+          0
+        ],
+        [
+          1,
+          119
+        ]
+      ],
+      "detalle_matriz_confusion": {
+        "verdaderos_negativos": 120,
+        "falsos_positivos": 0,
+        "falsos_negativos": 1,
+        "verdaderos_positivos": 119
+      }
+    },
+    "regresion_logistica": {
+      "nombre_modelo": "Regresión Logística",
+      "exactitud": 0.9917,
+      "f1_macro": 0.9917,
+      "precision_macro": 0.9918,
+      "exhaustividad_recall_macro": 0.9917,
+      "tiempo_entrenamiento_segundos": 6.0315,
+      "matriz_confusion": [
+        [
+          120,
+          0
+        ],
+        [
+          2,
+          118
+        ]
+      ],
+      "detalle_matriz_confusion": {
+        "verdaderos_negativos": 120,
+        "falsos_positivos": 0,
+        "falsos_negativos": 2,
+        "verdaderos_positivos": 118
+      }
+    }
+  },
+  "palabras_relevantes": {
+    "regresion_logistica": {
+      "top_positivas": [
+        {
+          "termino": "delicioso",
+          "peso": 3.022
+        },
+        {
+          "termino": "super",
+          "peso": 1.94
+        },
+        {
+          "termino": "estancia",
+          "peso": 1.704
+        },
+        {
+          "termino": "excelente",
+          "peso": 1.578
+        },
+        {
+          "termino": "encantar",
+          "peso": 1.552
+        },
+        {
+          "termino": "bien",
+          "peso": 1.469
+        },
+        {
+          "termino": "fin",
+          "peso": 1.459
+        },
+        {
+          "termino": "impecable",
+          "peso": 1.397
+        },
+        {
+          "termino": "cada",
+          "peso": 1.312
+        },
+        {
+          "termino": "duda",
+          "peso": 1.278
+        },
+        {
+          "termino": "sin duda",
+          "peso": 1.278
+        },
+        {
+          "termino": "hora estancia",
+          "peso": 1.24
+        }
+      ],
+      "top_negativas": [
+        {
+          "termino": "no",
+          "peso": -3.638
+        },
+        {
+          "termino": "pesimo",
+          "peso": -3.011
+        },
+        {
+          "termino": "sucio",
+          "peso": -2.72
+        },
+        {
+          "termino": "frio",
+          "peso": -2.658
+        },
+        {
+          "termino": "nadie",
+          "peso": -1.743
+        },
+        {
+          "termino": "habitacion sucio",
+          "peso": -1.725
+        },
+        {
+          "termino": "no recomendar",
+          "peso": -1.719
+        },
+        {
+          "termino": "nunca",
+          "peso": -1.643
+        },
+        {
+          "termino": "grosero",
+          "peso": -1.603
+        },
+        {
+          "termino": "nada",
+          "peso": -1.543
+        },
+        {
+          "termino": "crudo",
+          "peso": -1.36
+        },
+        {
+          "termino": "cucaracha",
+          "peso": -1.26
+        }
+      ]
+    },
+    "naive_bayes": {
+      "top_positivas": [
+        {
+          "termino": "estancia",
+          "log_probabilidad": -4.918,
+          "diferencia_log": 5.317
+        },
+        {
+          "termino": "super",
+          "log_probabilidad": -4.926,
+          "diferencia_log": 5.309
+        },
+        {
+          "termino": "cada",
+          "log_probabilidad": -5.129,
+          "diferencia_log": 5.106
+        },
+        {
+          "termino": "fin",
+          "log_probabilidad": -5.165,
+          "diferencia_log": 5.07
+        },
+        {
+          "termino": "duda",
+          "log_probabilidad": -5.222,
+          "diferencia_log": 5.013
+        },
+        {
+          "termino": "sin duda",
+          "log_probabilidad": -5.222,
+          "diferencia_log": 5.013
+        },
+        {
+          "termino": "bien",
+          "log_probabilidad": -5.278,
+          "diferencia_log": 4.957
+        },
+        {
+          "termino": "hora estancia",
+          "log_probabilidad": -5.29,
+          "diferencia_log": 4.945
+        },
+        {
+          "termino": "fascinado visita",
+          "log_probabilidad": -5.518,
+          "diferencia_log": 4.717
+        },
+        {
+          "termino": "fascinado",
+          "log_probabilidad": -5.518,
+          "diferencia_log": 4.717
+        },
+        {
+          "termino": "amigo",
+          "log_probabilidad": -5.518,
+          "diferencia_log": 4.717
+        },
+        {
+          "termino": "visita",
+          "log_probabilidad": -5.518,
+          "diferencia_log": 4.717
+        }
+      ],
+      "top_negativas": [
+        {
+          "termino": "pesimo",
+          "log_probabilidad": -4.689,
+          "diferencia_log": -5.501
+        },
+        {
+          "termino": "no recomendar",
+          "log_probabilidad": -4.908,
+          "diferencia_log": -5.282
+        },
+        {
+          "termino": "nadie",
+          "log_probabilidad": -5.214,
+          "diferencia_log": -4.976
+        },
+        {
+          "termino": "establecimiento",
+          "log_probabilidad": -5.28,
+          "diferencia_log": -4.91
+        },
+        {
+          "termino": "nunca",
+          "log_probabilidad": -5.286,
+          "diferencia_log": -4.904
+        },
+        {
+          "termino": "nada",
+          "log_probabilidad": -5.297,
+          "diferencia_log": -4.893
+        },
+        {
+          "termino": "hora espera",
+          "log_probabilidad": -5.316,
+          "diferencia_log": -4.874
+        },
+        {
+          "termino": "dinero",
+          "log_probabilidad": -5.332,
+          "diferencia_log": -4.858
+        },
+        {
+          "termino": "frio no",
+          "log_probabilidad": -5.532,
+          "diferencia_log": -4.658
+        },
+        {
+          "termino": "sopa",
+          "log_probabilidad": -5.54,
+          "diferencia_log": -4.65
+        },
+        {
+          "termino": "carne duro",
+          "log_probabilidad": -5.54,
+          "diferencia_log": -4.65
+        },
+        {
+          "termino": "carne",
+          "log_probabilidad": -5.54,
+          "diferencia_log": -4.65
+        }
+      ]
+    }
+  },
+  "analisis_errores": [
+    {
+      "texto_original": "Al llegar hubo confusión con la mesa y esperamos, pero nos pidieron disculpas amablemente y la cena fue maravillosa.",
+      "texto_limpio": "llegar confusion mesa esperar pedir disculpa amable cena maravilloso",
+      "etiqueta_real": "positivo",
+      "etiqueta_predicha": "negativo",
+      "probabilidad_confianza": 0.5947,
+      "explicacion_error": "Sentimientos mezclados con conector adversativo ('pero'/'aunque'/'sin embargo'): La reseña combina elogios y críticas en la misma oración. El peso de los términos secundarios inclinó la frontera de decisión hacia 'negativo' cuando el balance global era 'positivo'."
+    },
+    {
+      "texto_original": "Al principio no aparecía nuestra reserva en https://hotel-ejemplo.com, pero el gerente lo resolvió rápido y fue excelente.",
+      "texto_limpio": "principio no aparecia reserva url gerente resolver rapido excelente",
+      "etiqueta_real": "positivo",
+      "etiqueta_predicha": "negativo",
+      "probabilidad_confianza": 0.5424,
+      "explicacion_error": "Sentimientos mezclados con conector adversativo ('pero'/'aunque'/'sin embargo'): La reseña combina elogios y críticas en la misma oración. El peso de los términos secundarios inclinó la frontera de decisión hacia 'negativo' cuando el balance global era 'positivo'."
+    },
+    {
+      "texto_original": "Aunque el baño era antiguo y pequeño, la cama era muy cómoda y el personal tan amable que pasamos una gran noche.",
+      "texto_limpio": "aunque bano antiguo pequeno cama muy comodo personal tan amable pasamos gran noche",
+      "etiqueta_real": "positivo",
+      "etiqueta_predicha": "positivo",
+      "probabilidad_confianza": 0.6447,
+      "explicacion_error": "Caso límite de alta incertidumbre (confianza 64.5%): Sentimientos mezclados con conector adversativo ('pero'/'aunque'/'sin embargo'): La reseña combina elogios y críticas en la misma oración. El peso de los términos secundarios inclinó la frontera de decisión hacia 'negativo' cuando el balance global era 'positivo'."
+    },
+    {
+      "texto_original": "El precio subió 50 bolivianos respecto al año pasado, pero siguen manteniendo el mejor sabor y excelente servicio.",
+      "texto_limpio": "precio subio monto respecto ano pasado siguen mantener mejor sabor excelente servicio",
+      "etiqueta_real": "positivo",
+      "etiqueta_predicha": "positivo",
+      "probabilidad_confianza": 0.6829,
+      "explicacion_error": "Caso límite de alta incertidumbre (confianza 68.3%): Sentimientos mezclados con conector adversativo ('pero'/'aunque'/'sin embargo'): La reseña combina elogios y críticas en la misma oración. El peso de los términos secundarios inclinó la frontera de decisión hacia 'negativo' cuando el balance global era 'positivo'."
+    },
+    {
+      "texto_original": "¡Cinco estrellas al chef que logró servir la comida fría y tardar 2 horas! Pésimo servicio, no volveré.",
+      "texto_limpio": "cinco estrella chef lograr servir comida frio tardar num hora pesimo servicio no volver",
+      "etiqueta_real": "negativo",
+      "etiqueta_predicha": "negativo",
+      "probabilidad_confianza": 0.823,
+      "explicacion_error": "Caso límite de alta incertidumbre (confianza 82.3%): Estructura de negación compleja: Aunque el pipeline preserva el token 'no', la presencia de adjetivos de polaridad opuesta en otra cláusula desplazó la probabilidad hacia 'positivo'."
+    }
+  ]
+}
