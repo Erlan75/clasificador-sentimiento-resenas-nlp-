@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clasificador de Sentimiento de Reseñas en Español</title>
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+  <!-- ====================================================================== -->
+  <!-- ENCABEZADO Y BARRA DE ESTADO DEL SERVICIO (GET /health)                -->
+  <!-- ====================================================================== -->
+  <header class="encabezado">
+    <div class="encabezado-contenido">
+      <div>
+        <p class="encabezado-etiqueta">Proyecto Integrador · NLP + Machine Learning</p>
+        <h1>Clasificador de Sentimiento de Reseñas en Español <span>(Hoteles y Restaurantes)</span></h1>
+      </div>
+      <div id="barra-estado" class="barra-estado">
+        <span id="punto-estado" class="punto-estado punto-desconectado"></span>
+        <span id="texto-estado">Conectando con la API...</span>
+      </div>
+    </div>
+    <div class="estado-detalle">
+      <div class="chip-estado"><strong>Modelo en producción:</strong> <span id="estado-modelo">—</span></div>
+      <div class="chip-estado"><strong>Reseñas en el dataset:</strong> <span id="estado-total">—</span></div>
+      <div class="chip-estado"><strong>Modelos disponibles:</strong> <span id="estado-modelos">—</span></div>
+    </div>
+    <nav class="navegacion">
+      <a href="#seccion-analizador">1. Analizador</a>
+      <a href="#seccion-radiografia">2. Radiografía NLP</a>
+      <a href="#seccion-lote">3. Predicción por lotes</a>
+      <a href="#seccion-metricas">4. Métricas y modelos</a>
+    </nav>
+  </header>
+
+  <main class="contenedor">
+
+    <!-- ==================================================================== -->
+    <!-- SECCIÓN 1: ANALIZADOR INDIVIDUAL (POST /predict)                      -->
+    <!-- ==================================================================== -->
+    <section id="seccion-analizador" class="seccion">
+      <h2 class="titulo-seccion"><span class="numero-seccion">1</span> Analizador de Sentimiento Individual</h2>
+
+      <div class="rejilla-dos">
+        <!-- Formulario -->
+        <div class="tarjeta">
+          <label for="selector-modelo" class="etiqueta-campo">Modelo para predecir</label>
+          <select id="selector-modelo" class="selector">
+            <option value="produccion" id="opcion-produccion">Modelo en Producción (Regresión Logística)</option>
+            <option value="regresion_logistica">Regresión Logística</option>
+            <option value="naive_bayes">Naive Bayes Multinomial</option>
+          </select>
+
+          <label for="texto-resena" class="etiqueta-campo">Escriba una reseña en español</label>
+          <textarea id="texto-resena" class="area-texto" rows="6" maxlength="2000"
+            placeholder="Ej.: La atención fue excelente y la comida llegó caliente, muy recomendado..."></textarea>
+          <div class="contador" id="contador-texto">0 caracteres · 0 palabras</div>
+
+          <p class="etiqueta-campo">Ejemplos rápidos (1 clic)</p>
+          <div class="botones-ejemplo">
+            <button type="button" class="boton-ejemplo ejemplo-positivo" data-ejemplo="positivo">😊 Positivo claro</button>
+            <button type="button" class="boton-ejemplo ejemplo-negativo" data-ejemplo="negativo">🚫 Negativo con "NO"</button>
+            <button type="button" class="boton-ejemplo ejemplo-dificil" data-ejemplo="dificil">🤔 Difícil / ambiguo</button>
+          </div>
+
+          <div id="mensaje-error" class="mensaje-error oculto"></div>
+
+          <div class="acciones">
+            <button type="button" id="boton-analizar" class="boton-principal">Analizar sentimiento</button>
+            <button type="button" id="boton-limpiar" class="boton-secundario">Limpiar</button>
+          </div>
+        </div>
+
+        <!-- Tarjeta de resultado -->
+        <div class="tarjeta tarjeta-resultado" id="tarjeta-resultado">
+          <div id="resultado-vacio" class="resultado-vacio">
+            <div class="icono-vacio">📝</div>
+            <p>Escriba una reseña o use un ejemplo rápido y presione <strong>Analizar sentimiento</strong>.</p>
+          </div>
+
+          <div id="resultado-contenido" class="oculto">
+            <p class="etiqueta-campo">Sentimiento predicho</p>
+            <div id="etiqueta-sentimiento" class="etiqueta-sentimiento">—</div>
+            <p class="texto-tenue">Modelo usado: <strong id="resultado-modelo">—</strong> · Confianza: <strong id="resultado-confianza">—</strong></p>
+
+            <div class="barra-probabilidad">
+              <div id="barra-negativo" class="segmento-negativo" style="width:50%"></div>
+              <div id="barra-positivo" class="segmento-positivo" style="width:50%"></div>
+            </div>
+            <div class="leyenda-probabilidad">
+              <span class="texto-negativo">Negativo: <strong id="porcentaje-negativo">—</strong></span>
+              <span class="texto-positivo">Positivo: <strong id="porcentaje-positivo">—</strong></span>
+            </div>
+
+            <div id="caja-alternativo" class="caja-alternativo">
+              <p class="etiqueta-campo">Comparación con el modelo alternativo</p>
+              <div id="contenido-alternativo">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================================================================== -->
+    <!-- SECCIÓN 2: RADIOGRAFÍA DEL PIPELINE NLP                               -->
+    <!-- ==================================================================== -->
+    <section id="seccion-radiografia" class="seccion">
+      <h2 class="titulo-seccion"><span class="numero-seccion">2</span> Radiografía del Pipeline de NLP Paso a Paso</h2>
+      <p class="texto-tenue">Así transforma nuestro pipeline la reseña antes de enviarla al vectorizador TF-IDF y al clasificador.</p>
+
+      <div id="radiografia-vacia" class="tarjeta resultado-vacio">
+        <p>La radiografía aparecerá aquí después de analizar una reseña.</p>
+      </div>
+
+      <div id="flujo-nlp" class="flujo-nlp oculto">
+        <div class="paso-nlp">
+          <div class="cabecera-paso"><span class="numero-paso">1</span> Texto original</div>
+          <div class="cuerpo-paso" id="paso-original"></div>
+        </div>
+        <div class="paso-nlp">
+          <div class="cabecera-paso"><span class="numero-paso">2</span> Normalización</div>
+          <p class="nota-paso">Minúsculas, sin tildes (<code>unidecode</code>), sin puntuación y con tokens especiales <code>url</code>, <code>usuario</code>, <code>monto</code>, <code>num</code>.</p>
+          <div class="cuerpo-paso texto-mono" id="paso-normalizado"></div>
+        </div>
+        <div class="paso-nlp">
+          <div class="cabecera-paso"><span class="numero-paso">3</span> Tokenización</div>
+          <p class="nota-paso">Total de tokens: <strong id="cantidad-tokens">0</strong></p>
+          <div class="cuerpo-paso contenedor-chips" id="paso-tokens"></div>
+        </div>
+        <div class="paso-nlp">
+          <div class="cabecera-paso"><span class="numero-paso">4</span> Filtrado de stop words (protegiendo negaciones)</div>
+          <p class="nota-paso">En <span class="chip chip-protegida">color especial</span> las palabras de negación/intensidad que conservamos a propósito.</p>
+          <div class="cuerpo-paso contenedor-chips" id="paso-sin-vacias"></div>
+          <p class="nota-paso">Palabras vacías eliminadas:</p>
+          <div class="contenedor-chips" id="paso-eliminadas"></div>
+        </div>
+        <div class="paso-nlp">
+          <div class="cabecera-paso"><span class="numero-paso">5</span> Stemming (<code>SnowballStemmer</code>)</div>
+          <p class="nota-paso">Raíces truncadas (solo comparativo).</p>
+          <div class="cuerpo-paso contenedor-chips" id="paso-stemming"></div>
+        </div>
+        <div class="paso-nlp paso-final">
+          <div class="cabecera-paso"><span class="numero-paso">6</span> Lematización (usado por el modelo)</div>
+          <p class="nota-paso">Lemas canónicos que entran al vectorizador TF-IDF.</p>
+          <div class="cuerpo-paso contenedor-chips" id="paso-lematizacion"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================================================================== -->
+    <!-- SECCIÓN 3: PREDICCIÓN POR LOTES (POST /predict/batch)                 -->
+    <!-- ==================================================================== -->
+    <section id="seccion-lote" class="seccion">
+      <h2 class="titulo-seccion"><span class="numero-seccion">3</span> Predicción por Lotes</h2>
+
+      <div class="tarjeta">
+        <label for="texto-lote" class="etiqueta-campo">Una reseña por línea (máximo 50)</label>
+        <textarea id="texto-lote" class="area-texto" rows="6"
+          placeholder="Excelente hotel, muy limpio y cómodo&#10;Pésimo servicio, no recomiendo este lugar"></textarea>
+        <div class="contador" id="contador-lote">0 reseñas</div>
+
+        <div class="acciones">
+          <button type="button" id="boton-lote-prueba" class="boton-secundario">Cargar Lote de Prueba (5 reseñas)</button>
+          <label class="boton-secundario boton-archivo">
+            Cargar archivo .txt / .csv
+            <input type="file" id="archivo-lote" accept=".txt,.csv" hidden>
+          </label>
+          <button type="button" id="boton-analizar-lote" class="boton-principal">Analizar lote</button>
+        </div>
+        <div id="mensaje-error-lote" class="mensaje-error oculto"></div>
+      </div>
+
+      <div id="resultado-lote" class="oculto">
+        <div class="rejilla-resumen">
+          <div class="tarjeta-numero"><span class="numero-grande" id="lote-total">0</span><span>Total analizadas</span></div>
+          <div class="tarjeta-numero numero-positivo"><span class="numero-grande" id="lote-positivas">0</span><span>Positivas</span></div>
+          <div class="tarjeta-numero numero-negativo"><span class="numero-grande" id="lote-negativas">0</span><span>Negativas</span></div>
+          <div class="tarjeta-numero"><span class="numero-grande" id="lote-porcentaje">0%</span><span>% positivas</span></div>
+        </div>
+        <div class="tarjeta">
+          <p class="texto-tenue">Modelo usado: <strong id="lote-modelo">—</strong></p>
+          <div class="tabla-desplazable">
+            <table class="tabla">
+              <thead>
+                <tr><th>#</th><th>Reseña</th><th>Sentimiento</th><th>Prob. positivo</th><th>Confianza</th></tr>
+              </thead>
+              <tbody id="cuerpo-tabla-lote"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================================================================== -->
+    <!-- SECCIÓN 4: MÉTRICAS Y COMPARACIÓN DE MODELOS (GET /metrics)           -->
+    <!-- ==================================================================== -->
+    <section id="seccion-metricas" class="seccion">
+      <h2 class="titulo-seccion"><span class="numero-seccion">4</span> Panel de Métricas y Comparación de Modelos</h2>
+      <div id="mensaje-error-metricas" class="mensaje-error oculto"></div>
+
+      <div class="tarjeta">
+        <h3>Modelo en producción: <span id="metricas-modelo-produccion" class="texto-indigo">—</span></h3>
+        <p class="texto-tenue" id="metricas-justificacion"></p>
+        <p class="texto-tenue" id="metricas-division"></p>
+      </div>
+
+      <div class="tarjeta">
+        <h3>La Escalera de Modelos (conjunto de prueba 20%)</h3>
+        <div class="tabla-desplazable">
+          <table class="tabla">
+            <thead>
+              <tr><th>Escalón</th><th>Modelo</th><th>F1-Macro</th><th>Exactitud</th><th>Precisión</th><th>Exhaustividad (Recall)</th><th>Tiempo (s)</th></tr>
+            </thead>
+            <tbody id="cuerpo-tabla-escalera"></tbody>
+          </table>
+        </div>
+        <h4>Comparación visual del F1-Macro</h4>
+        <div id="barras-escalera" class="barras-escalera"></div>
+      </div>
+
+      <div class="tarjeta">
+        <h3>Hiperparámetros óptimos (GridSearchCV, validación cruzada de 5 pliegues)</h3>
+        <div id="contenedor-hiperparametros" class="rejilla-dos"></div>
+      </div>
+
+      <div class="tarjeta">
+        <h3>Matrices de confusión</h3>
+        <div id="contenedor-matrices" class="rejilla-dos"></div>
+      </div>
+
+      <div class="tarjeta">
+        <h3>Palabras y bigramas con mayor peso <span class="texto-tenue">(Regresión Logística)</span></h3>
+        <div class="rejilla-dos">
+          <div>
+            <h4 class="texto-positivo">Empujan hacia POSITIVO</h4>
+            <div id="palabras-positivas" class="lista-pesos"></div>
+          </div>
+          <div>
+            <h4 class="texto-negativo">Empujan hacia NEGATIVO</h4>
+            <div id="palabras-negativas" class="lista-pesos"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tarjeta">
+        <h3>Análisis de errores del conjunto de prueba</h3>
+        <p class="texto-tenue">Incluye los errores reales del modelo en producción y, para completar, los aciertos con mayor duda (confianza baja).</p>
+        <div class="tabla-desplazable">
+          <table class="tabla">
+            <thead>
+              <tr><th>Tipo</th><th>Reseña original</th><th>Real</th><th>Predicha</th><th>Confianza</th><th>Explicación</th></tr>
+            </thead>
+            <tbody id="cuerpo-tabla-errores"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pie">
+    Proyecto Integrador · Tópicos Avanzados · API: <span id="pie-url-api"></span> · <a id="enlace-docs" href="#" target="_blank">Documentación /docs</a>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
+
